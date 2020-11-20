@@ -16,7 +16,7 @@ d3.json("public/wasabi-artist.json").then(async rawData => {
     rawGenres.forEach(g => {
         let s = g.toLowerCase();
         let added = false;
-        if (s.includes("rock") || s.includes("punk")) {
+        if (s.includes("rock") || s.includes("punk") || s.includes("grunge")) {
             if (!genres.rock) {
                 genres.rock = [g];
             } else {
@@ -40,7 +40,8 @@ d3.json("public/wasabi-artist.json").then(async rawData => {
             }
             added = true;
         }
-        if (s.includes("metal") || s.includes("death")) {
+        if (s.includes("metal") || s.includes("death") || s.includes("grind") || s.includes("thrash")
+            || s.includes("nwobhm") || s.includes("nsbm") || s.includes("drone")) {
             if (!genres.metal) {
                 genres.metal = [g];
             } else {
@@ -48,7 +49,7 @@ d3.json("public/wasabi-artist.json").then(async rawData => {
             }
             added = true;
         }
-        if (s.includes("jazz")) {
+        if (s.includes("jazz") || s.includes("bop") || s.includes("swing") || s.includes("boogie")) {
             if (!genres.jazz) {
                 genres.jazz = [g];
             } else {
@@ -64,7 +65,11 @@ d3.json("public/wasabi-artist.json").then(async rawData => {
             }
             added = true;
         }
-        if (s.includes("electro") || s.includes("trance") || s.includes("techno") || s.includes("house") || s.includes("wave") || s.includes("ambient") || s.includes("dance")) {
+        if (s.includes("electro") || s.includes("trance") || s.includes("techno") || s.includes("house")
+            || s.includes("wave") || s.includes("ambient") || s.includes("dance") || s.includes("step")
+            || s.includes("bass") || s.includes("edm") || s.includes("ebm") || s.includes("beat")
+            || s.includes("rub") || s.includes("idm") || s.includes("rave") || s.includes("chill")
+            || s.includes("tronic")) {
             if (!genres.electro) {
                 genres.electro = [g];
             } else {
@@ -72,7 +77,7 @@ d3.json("public/wasabi-artist.json").then(async rawData => {
             }
             added = true;
         }
-        if (s.includes("reggae") || s.includes("ska")) {
+        if (s.includes("reggae") || s.includes("ska") || s.includes("ragga") || s === "dub") {
             if (!genres.reggae) {
                 genres.reggae = [g];
             } else {
@@ -96,7 +101,7 @@ d3.json("public/wasabi-artist.json").then(async rawData => {
             }
             added = true;
         }
-        if (s.includes("country")) {
+        if (s.includes("country") || s.includes("bluegrass")) {
             if (!genres.country) {
                 genres.country = [g];
             } else {
@@ -104,7 +109,8 @@ d3.json("public/wasabi-artist.json").then(async rawData => {
             }
             added = true;
         }
-        if (s.includes("latin")) {
+        if (s.includes("latin") || s.includes("samba") || s.includes("bossa nova") || s.includes("flamenco")
+            || s.includes("salsa") || s.includes("mexican")) {
             if (!genres.latin) {
                 genres.latin = [g];
             } else {
@@ -120,7 +126,7 @@ d3.json("public/wasabi-artist.json").then(async rawData => {
             }
             added = true;
         }
-        if (s.includes("classic")) {
+        if (s.includes("classic") || s.includes("music") || s.includes("opera") || s.includes("orchestral")) {
             if (!genres.classic) {
                 genres.classic = [g];
             } else {
