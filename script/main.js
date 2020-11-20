@@ -1,17 +1,4 @@
-d3.json("public/wasabi-artist.json").then(async rawData => {
-    let data = {};
-    let rawGenres = new Set();
-    rawData.forEach(d => {
-        if (d.genres !== "[]") {
-            data[d.id_artist_deezer] = {"id": d.id_artist_deezer, "name": d.name, "type": d.type, "lifeSpan": d.lifeSpan, "gender": d.gender, "rawGenres": d.genres, "deezerFans": d.deezerFans, "location": d.location};
-            let str = d.genres.substr(1, d.genres.length-2);
-            str = str.replace(/[^A-Za-z,\s]/g, "").split(",");
-            str.forEach(s => {
-                rawGenres.add(s);
-            });
-        }
-    });
-    console.log(rawGenres);
+function getGenresFiltered(rawGenres) {
     let genres = {};
     rawGenres.forEach(g => {
         let s = g.toLowerCase();
@@ -143,9 +130,34 @@ d3.json("public/wasabi-artist.json").then(async rawData => {
             }
         }
     });
-    console.log(genres);
+    return genres;
+}
 
-    await choropleth();
-    await pyramid();
-    await treemap();
+d3.json("public/wasabi-artist.json").then(async rawData => {
+    let artistes = {};
+    let rawGenres = new Set();
+    rawData.forEach(d => {
+        if (d.genres !== "[]") {
+            let genre = d.genres.substr(1, d.genres.length-2);
+            genre = genre.replace(/[^A-Za-z,\s]/g, "").split(",");
+            genre.forEach(s => {
+                rawGenres.add(s);
+            });
+            artistes[d.id_artist_deezer] = {"id": d.id_artist_deezer, "name": d.name, "type": d.type,
+                "lifeSpan": d.lifeSpan, "gender": d.gender, "genres": genre, "deezerFans": d.deezerFans,
+                "location": d.location};
+        }
+    });
+
+    let genres = getGenresFiltered(rawGenres);
+
+    choropleth().then(result => {
+        console.log(result);
+    });
+    pyramid().then(result => {
+        console.log(result);
+    });
+    treemap(artistes, genres).then(result => {
+        console.log(result);
+    });
 });
