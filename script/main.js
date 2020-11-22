@@ -133,6 +133,15 @@ function getGenresFiltered(rawGenres) {
     return genres;
 }
 
+function getGroups(artistes){
+    let groups = new Set();
+    for(a in artistes)
+        if(artistes[a]["type"].toLowerCase() === "group"){
+            groups.add(artistes[a]);
+        }
+    return groups;
+}
+
 d3.json("public/wasabi-artist.json").then(async rawData => {
     let artistes = {};
     let rawGenres = new Set();
@@ -150,14 +159,15 @@ d3.json("public/wasabi-artist.json").then(async rawData => {
     });
 
     let genres = getGenresFiltered(rawGenres);
+    let groups = getGroups(artistes);
 
-    choropleth().then(result => {
+    /*choropleth().then(result => {
+        console.log(result);
+    });*/
+    pyramid(groups).then(result => {
         console.log(result);
     });
-    pyramid().then(result => {
+    /*treemap(artistes, genres).then(result => {
         console.log(result);
-    });
-    treemap(artistes, genres).then(result => {
-        console.log(result);
-    });
+    });*/
 });
