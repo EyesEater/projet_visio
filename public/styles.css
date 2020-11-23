@@ -1,0 +1,13 @@
+body {
+    margin: 0;
+}
+
+.treemap, .temp {
+    position: fixed;
+    font: 12px sans-serif;
+}
+
+.temp {
+    pointer-events: none;
+    opacity: 0;
+}

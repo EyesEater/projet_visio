@@ -160,14 +160,15 @@ d3.json("public/wasabi-artist.json").then(async rawData => {
 
     let genres = getGenresFiltered(rawGenres);
     let groups = getGroups(artistes);
-
-    /*choropleth().then(result => {
+    /*
+    choropleth().then(result => {
         console.log(result);
-    });*/
+    });
     pyramid(groups).then(result => {
         console.log(result);
     });
-    /*treemap(artistes, genres).then(result => {
+     */
+    treemap(artistes, genres).then(result => {
         console.log(result);
-    });*/
+    });
 });
