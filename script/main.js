@@ -12,14 +12,14 @@ function getGenresFiltered(rawGenres) {
             added = true;
         }
         if (s.includes("pop") || s.includes("disco")) {
-            if (!genres.pop) {
-                genres.pop = [g];
+            if (!genres.popMusic) {
+                genres.popMusic = [g];
             } else {
-                genres.pop.push(g);
+                genres.popMusic.push(g);
             }
             added = true;
         }
-        if (s.includes(" hop") || s.includes("rap")) {
+        if (s.includes(" hop") || s.includes("rap") || s.includes("rub")) {
             if (!genres.hiphop) {
                 genres.hiphop = [g];
             } else {
@@ -55,7 +55,7 @@ function getGenresFiltered(rawGenres) {
         if (s.includes("electro") || s.includes("trance") || s.includes("techno") || s.includes("house")
             || s.includes("wave") || s.includes("ambient") || s.includes("dance") || s.includes("step")
             || s.includes("bass") || s.includes("edm") || s.includes("ebm") || s.includes("beat")
-            || s.includes("rub") || s.includes("idm") || s.includes("rave") || s.includes("chill")
+            || s.includes("idm") || s.includes("rave") || s.includes("chill")
             || s.includes("tronic")) {
             if (!genres.electro) {
                 genres.electro = [g];
@@ -142,6 +142,41 @@ function getGroups(artistes){
     return groups;
 }
 
+function getMainGenre(genresFiltered, genre){
+    let mainGenres = [];
+
+    for(let g in genresFiltered) {
+        if(genresFiltered[g].includes(genre)){
+            mainGenres.push(g);
+        }
+    }
+    mainGenres = mainGenres.filter(item => item !== "other")
+    return mainGenres;
+}
+
+function getArtistsByCountry(genresFiltered, artistes, year){
+    let countries = {};
+    for (let a in artistes) {
+        let yearBegin = artistes[a].lifeSpan.begin.split("-")[0];
+        let yearEnd = artistes[a].lifeSpan.end.split("-")[0];
+
+        if((yearEnd === "" || yearEnd >= year) && yearBegin <= year && countryList.includes(artistes[a].location.country)) {
+            if (!countries[artistes[a].location.country] ) {
+                countries[artistes[a].location.country] = [];
+            }
+            artistes[a].genres.forEach(g => {
+                getMainGenre(genresFiltered, g).forEach(mg => {
+                    if(!countries[artistes[a].location.country][mg]){
+                        countries[artistes[a].location.country][mg] = 0;
+                    }
+                    countries[artistes[a].location.country][mg] = parseInt(countries[artistes[a].location.country][mg]) + 1;
+                });
+            });
+        }
+    }
+    return countries;
+}
+
 d3.json("public/wasabi-artist.json").then(async rawData => {
     let artistes = {};
     let rawGenres = new Set();
@@ -160,15 +195,17 @@ d3.json("public/wasabi-artist.json").then(async rawData => {
 
     let genres = getGenresFiltered(rawGenres);
     let groups = getGroups(artistes);
-    /*
-    choropleth().then(result => {
+    let countries = getArtistsByCountry(genres, artistes, "2015");
+
+    choropleth(countries).then(result => {
         console.log(result);
-    });
+    });/*
     pyramid(groups).then(result => {
         console.log(result);
     });
      */
-    treemap(artistes, genres).then(result => {
+    /*treemap(artistes, genres).then(result => {
         console.log(result);
-    });
+    });*/
+    console.log(countries);
 });
