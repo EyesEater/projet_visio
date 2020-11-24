@@ -150,7 +150,7 @@ function getMainGenre(genresFiltered, genre){
             mainGenres.push(g);
         }
     }
-    mainGenres = mainGenres.filter(item => item !== "other")
+    //mainGenres = mainGenres.filter(item => item !== "other")
     return mainGenres;
 }
 
@@ -162,7 +162,7 @@ function getArtistsByCountry(genresFiltered, artistes, year){
 
         if((yearEnd === "" || yearEnd >= year) && yearBegin <= year && countryList.includes(artistes[a].location.country)) {
             if (!countries[artistes[a].location.country] ) {
-                countries[artistes[a].location.country] = [];
+                countries[artistes[a].location.country] = {};
             }
             artistes[a].genres.forEach(g => {
                 getMainGenre(genresFiltered, g).forEach(mg => {
@@ -174,6 +174,16 @@ function getArtistsByCountry(genresFiltered, artistes, year){
             });
         }
     }
+
+    for (c in countries){
+        if(Object.keys(countries[c]).length > 1){
+            //countries[c] = countries[c].remove("other")
+            //delete countries[c]["other"];
+        } else {
+            console.log(c)
+        }
+    }
+    console.log(countries)
     return countries;
 }
 
@@ -195,9 +205,9 @@ d3.json("public/wasabi-artist.json").then(async rawData => {
 
     let genres = getGenresFiltered(rawGenres);
     let groups = getGroups(artistes);
-    let countries = getArtistsByCountry(genres, artistes, "2015");
+    let countries = getArtistsByCountry(genres, artistes, "1998");
 
-    choropleth(countries).then(result => {
+    choropleth(genres, artistes, countries).then(result => {
         console.log(result);
     });/*
     pyramid(groups).then(result => {

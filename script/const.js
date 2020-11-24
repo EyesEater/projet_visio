@@ -2,7 +2,7 @@ const genreColor = {
     "popMusic" : "#229922",
     "rock" : "#224099",
     "hiphop" : "#992297",
-    "metal" : "#000000",
+    "metal" : "#e700ff",
     "jazz" : "#999322",
     "folk" : "#993422",
     "electro" : "#22998b",
@@ -13,6 +13,18 @@ const genreColor = {
     "latin" : "#ffe400",
     "soul" : "#e77e30",
     "classic" : "#066c88",
+    "undefined" : "#7e7575",
+    "other" : "#ff0000"
+}
+
+const synonymsCountries = {
+    "The Bahamas" : "Bahamas",
+    "Republic of  Serbia" : "Serbia",
+    "Czechia" : "Czech Republic",
+    "United Republic of Tanzania" : "Tanzania",
+    "England" : "United Kingdom",
+    "USA" : "United States",
+    "Vietnam" : "Viet Nam",
 }
 
 const countryList = [
@@ -31,7 +43,7 @@ const countryList = [
     "Australia",
     "Austria",
     "Azerbaijan",
-    "Bahamas",
+    "Bahamas", //The bahamas
     "Bahrain",
     "Bangladesh",
     "Barbados",
@@ -65,14 +77,15 @@ const countryList = [
     "Cocos (Keeling) Islands (the)",
     "Colombia",
     "Comoros",
-    "Congo",
+    "Republic of the Congo",
+    "Democratic Republic of the Congo",
     "Cook Islands",
     "Costa Rica",
     "Croatia",
     "Cuba",
     "Curaçao",
     "Cyprus",
-    "Czechia",
+    "Czech Republic", // Czechia
     "Côte d'Ivoire",
     "Denmark",
     "Djibouti",
@@ -95,7 +108,7 @@ const countryList = [
     "French Polynesia",
     "French Southern Territories (the)",
     "Gabon",
-    "Gambia (the)",
+    "Gambia",
     "Georgia",
     "Germany",
     "Ghana",
@@ -136,7 +149,7 @@ const countryList = [
     "South Korea",
     "Kuwait",
     "Kyrgyzstan",
-    "Lao People's Democratic Republic (the)",
+    "Laos",
     "Latvia",
     "Lebanon",
     "Lesotho",
@@ -194,7 +207,7 @@ const countryList = [
     "Portugal",
     "Puerto Rico",
     "Qatar",
-    "Republic of North Macedonia",
+    "Macedonia",
     "Romania",
     "Russia",
     "Rwanda",
@@ -211,7 +224,7 @@ const countryList = [
     "Sao Tome and Principe",
     "Saudi Arabia",
     "Senegal",
-    "Serbia",
+    "Serbia", // Republic of Serbia
     "Seychelles",
     "Sierra Leone",
     "Singapore",
@@ -233,7 +246,7 @@ const countryList = [
     "Syrian Arab Republic",
     "Taiwan",
     "Tajikistan",
-    "Tanzania",
+    "Tanzania", // United Republic of Tanzania
     "Thailand",
     "Timor-Leste",
     "Togo",
@@ -248,14 +261,14 @@ const countryList = [
     "Uganda",
     "Ukraine",
     "United Arab Emirates",
-    "United Kingdom",
+    "United Kingdom", // England
     "United States Minor Outlying Islands",
-    "United States",
+    "United States", // USA
     "Uruguay",
     "Uzbekistan",
     "Vanuatu",
     "Venezuela",
-    "Viet Nam",
+    "Viet Nam", //Vietnam
     "Virgin Islands (British)",
     "Virgin Islands (U.S.)",
     "Wallis and Futuna",
