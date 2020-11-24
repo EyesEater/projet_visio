@@ -1,11 +1,13 @@
 function getDataFormated(artistes, genres) {
     let data = {
         "name":"genres",
+        "color":"#FFF",
         "children": []
     };
 
     for (let elem in genres) {
         let children = [];
+        var colorFamily = d3.scaleLinear().domain([1,7]).range([genreColor[elem], "#FFF"])
         if (genres.hasOwnProperty(elem)) {
             for (let value in genres[elem]) {
                 if (genres[elem].hasOwnProperty(value)) {
@@ -15,6 +17,7 @@ function getDataFormated(artistes, genres) {
                             if (artistes[id].genres.includes(genres[elem][value])) {
                                 let artiste = artistes[id];
                                 artiste.value = artistes[id].deezerFans;
+                                artiste.color = colorFamily(5);
                                 tmpArtiste.push(artiste);
                             }
                         }
@@ -22,6 +25,7 @@ function getDataFormated(artistes, genres) {
 
                     children.push({
                         "name": genres[elem][value],
+                        "color": colorFamily(3),
                         "children": tmpArtiste
                     });
                 }
@@ -29,6 +33,7 @@ function getDataFormated(artistes, genres) {
 
             data["children"].push({
                 "name": elem,
+                "color": colorFamily(1),
                 "children": children
             });
         }
@@ -67,9 +72,11 @@ async function treemap(artistes, genres) {
 
     const zoom = (data) => {
         let name = data.data.name;
+        let color = data.data.color;
         if (name && data.data.children) {
             render({
                 name,
+                color,
                 children: data.data.children
             });
         }
@@ -115,7 +122,7 @@ async function treemap(artistes, genres) {
         // Create rectangle
         node.append('rect')
             .attr('id', d => d.nodeId = uuidv4())
-            .attr('fill', d => color(d.height))
+            .attr('fill', d => d.data.color)
             .attr('width', d => d.x1 - d.x0)
             .attr('height', d => d.y1 - d.y0);
 
@@ -163,12 +170,16 @@ async function treemap(artistes, genres) {
         d3.select('select').on('change', function () {
             color = d3.scaleSequential([8, 0], d3[d3.select(this).property('value')]);
 
-            node.select('rect').attr('fill', d => color(d.height));
+            node.select('rect').attr('fill', d => d.data.color);
         });
     };
 
     const render = data => {
         const root = treemap(data);
+        var popup = d3.select("body").append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0)
+            .style("background-color", '#BBB');
 
         const svg    = d3.select('.treemap');
         const newSvg = d3.select('.temp')
@@ -202,7 +213,7 @@ async function treemap(artistes, genres) {
         // Create rectangle
         node.append('rect')
             .attr('id', d => d.nodeId = uuidv4())
-            .attr('fill', d => color(d.height))
+            .attr('fill', d => d.data.color)
             .attr('width', d => d.x1 - d.x0)
             .attr('height', d => d.y1 - d.y0);
 
@@ -241,7 +252,29 @@ async function treemap(artistes, genres) {
         // Add click event on leaf
         node.filter(d => !d.children)
             .attr('cursor', 'pointer')
-            .on('click', (e,d) => displayLeaf(d))
+            .on("mouseover", function (event,i){
+                popup.transition()
+                    .duration(200)
+                    .style("opacity", .9);
+                popup.html("<b>" + i.data.name + "</b><br/>" +
+                    (i.data.gender ? ( (i.data.gender === "Female") ? "Femme" : "Homme" ) : "Groupe") + "<br/>" +
+                    i.data.genres + "<br/>" +
+                    ((i.data.type === "Group") ? "Date de création du groupe " + i.data.lifeSpan.begin : "Date de naissance ") + i.data.lifeSpan.begin + "<br/>" +
+                    ((i.data.type === "Group") ? ( (i.data.lifeSpan.end) ? "Date de fin du groupe " + i.data.lifeSpan.end : "Le groupe existe toujours"): ((i.data.lifeSpan.end) ? "Dates de décès " + i.data.lifeSpan.end : "L'artiste n'est pas décédé")) + "<br/>" +
+                    i.data.location.city + ", " + i.data.location.country + "<br/>" +
+                    "Nombre de fans deezer " + i.data.deezerFans + "<br/>")
+                    .style("left", ((event.x + 20) + "px"))
+                    .style("top", ((event.y + 20) + "px"));
+            })
+            .on("mouseout", function() {
+                popup.transition()
+                    .duration(500)
+                    .style("opacity", 0);
+                popup.html("")
+                    .style("left", ("0 px"))
+                    .style("top", ("0 px"));
+            })
+            //.on('click', (e,d) => displayLeaf(d))
 
         // Fade out old svg
         svg.transition()
@@ -261,9 +294,9 @@ async function treemap(artistes, genres) {
             });
 
         d3.select('select').on('change', function () {
-            color = d3.scaleSequential([8, 0], d3[d3.select(this).property('value')]);
-
-            node.select('rect').attr('fill', d => color(d.height));
+            //color = d3.scaleSequential([8, 0], d3[d3.select(this).property('value')]);
+            let colorFamily = d3.scaleLinear().domain([1,3]).range([d3.select(this).property('value'), "#FFF"])
+            node.select('rect').attr('fill', d => colorFamily(2));
         });
     };
 

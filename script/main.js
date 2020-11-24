@@ -11,7 +11,7 @@ function getGenresFiltered(rawGenres) {
             }
             added = true;
         }
-        if (s.includes("pop") || s.includes("disco")) {
+        if (s.includes("pop") || s.includes("disco") || s.includes("singersongwriter") || s.includes("chanson")) {
             if (!genres.popMusic) {
                 genres.popMusic = [g];
             } else {
@@ -28,7 +28,7 @@ function getGenresFiltered(rawGenres) {
             added = true;
         }
         if (s.includes("metal") || s.includes("death") || s.includes("grind") || s.includes("thrash")
-            || s.includes("nwobhm") || s.includes("nsbm") || s.includes("drone")) {
+            || s.includes("nwobhm") || s.includes("nsbm") || s.includes("drone") || s.includes("industrial") || s.includes("hardcore")) {
             if (!genres.metal) {
                 genres.metal = [g];
             } else {
@@ -36,7 +36,7 @@ function getGenresFiltered(rawGenres) {
             }
             added = true;
         }
-        if (s.includes("jazz") || s.includes("bop") || s.includes("swing") || s.includes("boogie")) {
+        if (s.includes("jazz") || s.includes("bop") || s.includes("swing") || s.includes("boogie") || s.includes("big band")) {
             if (!genres.jazz) {
                 genres.jazz = [g];
             } else {
@@ -44,7 +44,7 @@ function getGenresFiltered(rawGenres) {
             }
             added = true;
         }
-        if (s.includes("folk")) {
+        if (s.includes("folk") || s.includes("acoustic")) {
             if (!genres.folk) {
                 genres.folk = [g];
             } else {
@@ -97,7 +97,7 @@ function getGenresFiltered(rawGenres) {
             added = true;
         }
         if (s.includes("latin") || s.includes("samba") || s.includes("bossa nova") || s.includes("flamenco")
-            || s.includes("salsa") || s.includes("mexican")) {
+            || s.includes("salsa") || s.includes("mexican") || s.includes("brazilian") || s.includes("mpb") || s.includes("sertanejo")) {
             if (!genres.latin) {
                 genres.latin = [g];
             } else {
@@ -113,7 +113,7 @@ function getGenresFiltered(rawGenres) {
             }
             added = true;
         }
-        if (s.includes("classic") || s.includes("music") || s.includes("opera") || s.includes("orchestral")) {
+        if (s.includes("classic") || s.includes("music") || s.includes("opera") || s.includes("orchestral") || s.includes("baroque") || s.includes("bolero")) {
             if (!genres.classic) {
                 genres.classic = [g];
             } else {
@@ -178,12 +178,9 @@ function getArtistsByCountry(genresFiltered, artistes, year){
     for (c in countries){
         if(Object.keys(countries[c]).length > 1){
             //countries[c] = countries[c].remove("other")
-            //delete countries[c]["other"];
-        } else {
-            console.log(c)
+            delete countries[c]["other"];
         }
     }
-    console.log(countries)
     return countries;
 }
 
@@ -207,15 +204,14 @@ d3.json("public/wasabi-artist.json").then(async rawData => {
     let groups = getGroups(artistes);
     let countries = getArtistsByCountry(genres, artistes, "1998");
 
-    choropleth(genres, artistes, countries).then(result => {
+    /*choropleth(genres, artistes, countries).then(result => {
         console.log(result);
-    });/*
+    });
     pyramid(groups).then(result => {
         console.log(result);
     });
-     */
-    /*treemap(artistes, genres).then(result => {
+*/
+    treemap(artistes, genres).then(result => {
         console.log(result);
-    });*/
-    console.log(countries);
+    });
 });
