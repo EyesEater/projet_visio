@@ -8,8 +8,9 @@ async function choropleth(countries) {
     // Map and projection
     var path = d3.geoPath();
     var projection = d3.geoMercator()
-        .scale(300)
-        //.center([width/2,height/2]);
+        .scale(window.innerWidth/10)
+        .center([0, 40])
+        .translate([width/2, height/2]);
 
     // Data and color scale
     //var data = d3.map();
@@ -48,7 +49,7 @@ async function choropleth(countries) {
 
         // Draw the map
         svg.append("g")
-            .attr("transform", "translate(" + width / 3 + "," + height / 2 + ")")
+           //.attr("transform", "translate(" + window.innerWidth / 4 + "," + window.innerHeight / 4 + ")")
             .selectAll("path")
             .data(topo.features)
             .enter()
@@ -67,8 +68,6 @@ async function choropleth(countries) {
             .style("opacity", .8)
             .on("mouseover", mouseOver )
             .on("mouseleave", mouseLeave )
-
-        d3.select("#choropleth").attr("width", svg.attr("width")).attr("height", svg.attr("height"))
     }
     return "Fin Choropleth";
 }
