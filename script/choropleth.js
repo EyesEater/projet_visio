@@ -1,4 +1,4 @@
-function buildPieChart(data) {
+function buildPieChart(data,countryName) {
     var width = 450
     height = 450
     margin = 40
@@ -7,6 +7,7 @@ function buildPieChart(data) {
     var radius = Math.min(width, height) / 2 - margin
 
 // append the svg object to the div called 'my_dataviz'
+    d3.select("#piechart").select("svg").remove();
     var svg = d3.select("#piechart")
         .append("svg")
         .attr("width", width)
@@ -14,23 +15,21 @@ function buildPieChart(data) {
         .append("g")
         .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
-// Create dummy data
-    var test = {a: 9, b: 20, c:30, d:8, e:12}
-
-// set the color scale
-    /*var color = d3.scaleOrdinal()
-        .domain(data)
-        .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56"])*/
+    d3.select("p#piechartlegend").text(countryName);
 
 // Compute the position of each group on the pie:
     var pie = d3.pie()
         .sort(null)
-        .value(function(d) {return d.value; })
-    var data_ready = pie(Object.entries(data))
+        .value(function(d) {return d[1]; })
+
+    var data_ready;
+    if(data !== undefined)
+        data_ready = pie(Object.entries(data))
+    else
+        data_ready = pie([['undefined',1]])
     console.log(data_ready)
 // Build the pie chart: Basically, each part of the pie is a path that we build using the arc function.
-    svg
-        .selectAll('test')
+    svg.selectAll('piechart')
         .data(data_ready)
         .enter()
         .append('path')
@@ -38,10 +37,12 @@ function buildPieChart(data) {
             .innerRadius(0)
             .outerRadius(radius)
         )
-        .attr('fill', function(d){ return(genreColor[d.data.key]) })
+        .attr('fill', function(d){ return(genreColor[d.data[0]]) })
         .attr("stroke", "black")
         .style("stroke-width", "2px")
         .style("opacity", 0.7)
+        .append('text')
+        .text(function (d){return d.data[0];})
 }
 
 async function choropleth(genresFiltered, artistes, countries) {
@@ -73,7 +74,6 @@ async function choropleth(genresFiltered, artistes, countries) {
                 .transition()
                 .duration(200)
                 .style("opacity", 1)
-                .style("stroke", "black")
         }
 
         let mouseLeave = function(d) {
@@ -84,12 +84,10 @@ async function choropleth(genresFiltered, artistes, countries) {
             d3.select(this)
                 .transition()
                 .duration(200)
-                .style("stroke", "transparent")
         }
 
         let mouseClick = function (d) {
-            console.log(countries[d.target.id])
-            buildPieChart(countries[d.target.id]);
+            buildPieChart(countries[getSynonym(d.target.id)],getSynonym(d.target.id));
         }
 
         // Draw the map
@@ -144,7 +142,6 @@ async function choropleth(genresFiltered, artistes, countries) {
         .default(new Date(1998, 10, 3))
         .on('onchange', val => {
             countries = getArtistsByCountry(genresFiltered, artistes, d3.timeFormat('%Y')(val))
-            console.log(countries)
             refillMap(countries);
             d3.select('p#value-time').text(d3.timeFormat('%Y')(val));
         });

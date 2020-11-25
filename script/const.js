@@ -24,7 +24,11 @@ const synonymsCountries = {
     "United Republic of Tanzania" : "Tanzania",
     "England" : "United Kingdom",
     "USA" : "United States",
-    "Vietnam" : "Viet Nam",
+    "UnitedStates" : "United States",
+    "UnitedKingdom" : "United Kingdom",
+    "CzechRepublic" : "Czech Republic",
+    "SouthKorea" : "South Korea",
+    "NewZealand" : "New Zealand"
 }
 
 const countryList = [
