@@ -1,6 +1,6 @@
 function buildPieChart(data,countryName) {
-    var width = 450
-    height = 450
+    var width = 450,
+    height = 450,
     margin = 40
 
 // The radius of the pieplot is half the width or half the height (smallest one). I subtract a bit of margin.
@@ -74,6 +74,7 @@ async function choropleth(genresFiltered, artistes, countries) {
                 .transition()
                 .duration(200)
                 .style("opacity", 1)
+            d3.select(this).style("cursor", "pointer");
         }
 
         let mouseLeave = function(d) {
@@ -84,6 +85,7 @@ async function choropleth(genresFiltered, artistes, countries) {
             d3.select(this)
                 .transition()
                 .duration(200)
+            d3.select(this).style("cursor", "default");
         }
 
         let mouseClick = function (d) {
@@ -202,6 +204,7 @@ function getSynonym(country){
 }
 
 function refillMap(countries){
+    d3.select("#piechart").select("svg").remove();
     d3.selectAll("path").attr("fill", genreColor["undefined"])
 
     for(let c in countries) {
@@ -222,5 +225,4 @@ function refillMap(countries){
             return genreColor[genreMaxR];
         })
     }
-
 }
