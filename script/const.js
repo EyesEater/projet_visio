@@ -28,7 +28,10 @@ const synonymsCountries = {
     "UnitedKingdom" : "United Kingdom",
     "CzechRepublic" : "Czech Republic",
     "SouthKorea" : "South Korea",
-    "NewZealand" : "New Zealand"
+    "NewZealand" : "New Zealand",
+    "DemocraticRepublicoftheCongo" : "Democratic Republic of the Congo",
+    "CentralAfricanRepublic" : "Central African Republic",
+    "Republic of the Congo" : "Republic of the Congo",
 }
 
 const countryList = [

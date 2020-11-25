@@ -15,7 +15,7 @@ function buildPieChart(data,countryName) {
         .append("g")
         .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
-    d3.select("p#piechartlegend").text(countryName);
+    d3.select("p#piechartlegend").text(countryName).attr("transform","translate(0,100)");
 
 // Compute the position of each group on the pie:
     var pie = d3.pie()
@@ -118,7 +118,7 @@ async function choropleth(genresFiltered, artistes, countries) {
                 }
                 return genreColor[genreMax];
             })
-            .attr("id", d => getSynonym(d.properties.name).replace(" ",""))
+            .attr("id", d => getSynonym(d.properties.name).replace(/\s/g,""))
             .style("stroke", "Black")
             .attr("class", function(d){ return "Country" } )
             .style("opacity", .8)
@@ -208,7 +208,7 @@ function refillMap(countries){
     d3.selectAll("path").attr("fill", genreColor["undefined"])
 
     for(let c in countries) {
-        d3.select("#"+c.replace(" ",""))
+        d3.select("#"+c.replace(/\s/g,""))
         .attr("fill", function (d){
             let genresR = countries[getSynonym(c)];
             let genreMaxR = "";

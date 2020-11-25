@@ -11,3 +11,9 @@ body {
     pointer-events: none;
     opacity: 0;
 }
+
+#piechartlegend{
+    position: relative;
+    top: 10%;
+    left: 25%;
+}

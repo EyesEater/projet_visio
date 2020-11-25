@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Projet Visualisation des données</title>
-    <link rel="stylesheet" type="text/css" href="public/styles.css" />
+    <title>Linked Population Pyramid</title>
+    <link rel="stylesheet" type="text/css" href="../public/styles.css" />
     <script src="https://d3js.org/d3.v6.min.js"></script>
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
     <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
@@ -18,17 +18,14 @@
     />
 </head>
 <body>
-    <h1>Visualisation Artistes</h1>
-<ul>
-    <li>
-        <a href="./html/choropleth.html">Choropleth map des genres selon l'année</a>
-    </li>
-    <li>
-        <a href="./html/pyramid.html">Population pyramid des créations et séparations de groupes</a>
-    </li>
-    <li>
-        <a href="./html/treemap.html">Treemap des genres selon la popularité</a>
-    </li>
-</ul>
+    <h3>Population pyramid des créations et séparations de groupes</h3><a href="../index.html">Retour</a>
+    <div id="pyramid"></div>
+
+    <script src="../script/const.js"></script>
+    <script src="../script/pyramid.js"></script>
+    <script src="../script/main.js"></script>
+    <script type="text/javascript">
+        main("pyramid");
+    </script>
 </body>
 </html>

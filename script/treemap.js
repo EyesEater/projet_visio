@@ -45,7 +45,7 @@ async function treemap(artistes, genres) {
     let data = getDataFormated(artistes, genres);
 
     const width = window.innerWidth;
-    const height = window.innerHeight - 20;
+    const height = window.innerHeight * 0.8;
 
     const animationSpeed = 500;
 
