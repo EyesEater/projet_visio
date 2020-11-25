@@ -205,6 +205,7 @@ function getSynonym(country){
 
 function refillMap(countries){
     d3.select("#piechart").select("svg").remove();
+    d3.select("p#piechartlegend").text("");
     d3.selectAll("path").attr("fill", genreColor["undefined"])
 
     for(let c in countries) {
