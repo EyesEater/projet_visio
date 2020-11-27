@@ -7,15 +7,15 @@ function getDataFormated(artistes, genres) {
 
     for (let elem in genres) {
         let children = [];
-        var colorFamily = d3.scaleLinear().domain([1,7]).range([genreColor[elem], "#FFF"])
         if (genres.hasOwnProperty(elem)) {
+            let colorFamily = d3.scaleLinear().domain([1,7]).range([genreColor[elem], "#FFF"])
             for (let value in genres[elem]) {
                 if (genres[elem].hasOwnProperty(value)) {
                     let tmpArtiste = [];
                     for (let id in artistes) {
                         if (artistes.hasOwnProperty(id)) {
                             if (artistes[id].genres.includes(genres[elem][value])) {
-                                let artiste = artistes[id];
+                                let artiste = JSON.parse(JSON.stringify(artistes[id]));
                                 artiste.value = artistes[id].deezerFans;
                                 artiste.color = colorFamily(5);
                                 tmpArtiste.push(artiste);
@@ -48,9 +48,7 @@ async function treemap(artistes, genres) {
     const height = window.innerHeight * 0.8;
 
     const animationSpeed = 500;
-
     let color = d3.scaleSequential([8, 0], d3.interpolateCool);
-
     const treemap = data => d3.treemap()
         .size([width, height])
         .paddingOuter(5)
@@ -80,11 +78,6 @@ async function treemap(artistes, genres) {
                 children: data.data.children
             });
         }
-    }
-
-    function displayLeaf(data) {
-        let person = data.data;
-        renderLeaf(person);
     }
 
     const renderLeaf = data => {
@@ -213,7 +206,7 @@ async function treemap(artistes, genres) {
         // Create rectangle
         node.append('rect')
             .attr('id', d => d.nodeId = uuidv4())
-            .attr('fill', d => d.data.color)
+            .attr('fill', d =>  d.data.color)
             .attr('width', d => d.x1 - d.x0)
             .attr('height', d => d.y1 - d.y0);
 
