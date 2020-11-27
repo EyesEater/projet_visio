@@ -1,6 +1,6 @@
 function buildPieChart(data,countryName) {
-    var width = 450,
-    height = 450,
+    var width = 400,
+    height = 400,
     margin = 40
 
 // The radius of the pieplot is half the width or half the height (smallest one). I subtract a bit of margin.
