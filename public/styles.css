@@ -6,6 +6,12 @@ body {
     font: 12px sans-serif;
 }
 
+.temp {
+    position: fixed;
+    pointer-events: none;
+    opacity: 0;
+}
+
 #piechartlegend{
     position: relative;
     top: 10%;
