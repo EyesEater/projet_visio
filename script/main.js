@@ -183,40 +183,56 @@ function getArtistsByCountry(genresFiltered, artistes, year){
     }
     return countries;
 }
-function main(choice){
-    console.log("Loading " + choice);
-    d3.json("../public/wasabi-artist.json").then(async rawData => {
-        let artistes = {};
-        let rawGenres = new Set();
-        rawData.forEach(d => {
-            if (d.genres !== "[]") {
-                let genre = d.genres.substr(1, d.genres.length-2);
-                genre = genre.replace(/[^A-Za-z,\s]/g, "").split(",");
-                genre.forEach(s => {
-                    rawGenres.add(s);
-                });
-                artistes[d.id_artist_deezer] = {"id": d.id_artist_deezer, "name": d.name, "type": d.type,
-                    "lifeSpan": d.lifeSpan, "gender": d.gender, "genres": genre, "deezerFans": d.deezerFans,
-                    "location": d.location};
-            }
-        });
 
-        let genres = getGenresFiltered(rawGenres);
-        let groups = getGroups(artistes);
-        let countries = getArtistsByCountry(genres, artistes, "1998");
+function clickTreemap(){
+    $("#pyramid").hide();
+    $("#divChoropleth").hide();
+    $("#divTreemap").show();
+}
 
-        if(choice === "choropleth")
-            choropleth(genres, artistes, countries).then(result => {
-                console.log(result);
+function clickChoropleth(){
+    $("#pyramid").hide();
+    $("#divTreemap").hide();
+    $("#divChoropleth").show();
+}
+
+function clickPyramid(){
+    $("#pyramid").show();
+    $("#divTreemap").hide();
+    $("#divChoropleth").hide();
+}
+
+d3.json("public/wasabi-artist.json").then(async rawData => {
+    let artistes = {};
+    let rawGenres = new Set();
+    rawData.forEach(d => {
+        if (d.genres !== "[]") {
+            let genre = d.genres.substr(1, d.genres.length-2);
+            genre = genre.replace(/[^A-Za-z,\s]/g, "").split(",");
+            genre.forEach(s => {
+                rawGenres.add(s);
             });
-        else if(choice === "pyramid")
-            pyramid(groups).then(result => {
-               console.log(result);
-            });
-        else if(choice === "treemap")
-            treemap(artistes, genres).then(result => {
-                console.log(result);
-            });
+            artistes[d.id_artist_deezer] = {"id": d.id_artist_deezer, "name": d.name, "type": d.type,
+                "lifeSpan": d.lifeSpan, "gender": d.gender, "genres": genre, "deezerFans": d.deezerFans,
+                "location": d.location};
+        }
     });
 
-}
+    let genres = getGenresFiltered(rawGenres);
+    let groups = getGroups(artistes);
+    let countries = getArtistsByCountry(genres, artistes, "1998");
+
+    choropleth(genres, artistes, countries).then(result => {
+        console.log(result);
+    });
+
+    pyramid(groups).then(result => {
+       console.log(result);
+    });
+
+    treemap(artistes, genres).then(result => {
+        console.log(result);
+    });
+
+
+});

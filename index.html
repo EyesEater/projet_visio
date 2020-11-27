@@ -18,7 +18,7 @@
     />
 </head>
 <body>
-    <h1>Visualisation Artistes</h1>
+    <!--<h1>Visualisation Artistes</h1>
 <ul>
     <li>
         <a href="./html/choropleth.html">Choropleth map des genres selon l'année</a>
@@ -29,6 +29,56 @@
     <li>
         <a href="./html/treemap.html">Treemap des genres selon la popularité</a>
     </li>
-</ul>
+</ul>-->
+    <div class="row">
+        <div class="col-4">
+            <button onclick="clickChoropleth();">Choropleth</button>
+        </div>
+        <div class="col-4" onclick="clickPyramid();">
+            <button>Pyramid</button>
+        </div>
+        <div class="col-4" onclick="clickTreemap();">
+            <button>Treemap</button>
+        </div>
+    </div>
+    <div id="divChoropleth">
+        <div class="row">
+            <div class="col-1 align-items-center">
+                <div class="col-sm-2"><p id="value-time"></p></div>
+                <div class="col-sm"><div id="slider-time"></div></div>
+            </div>
+            <div class="col-8" id="choropleth">
+            </div>
+            <div class="col-2">
+                <div class="row">
+                    <div class="col-12" id="legend"></div>
+                </div>
+                <div class="row">
+                    <div class="col-12" id="piechart">
+                        <b><p id="piechartlegend" class="text-center row"></p></b>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="pyramid" style="display: none"></div>
+
+    <div id="divTreemap" style="display: none">
+        <div class="options" style="float: right">
+            <button>Zoom out</button>
+        </div>
+        <br/>
+        <div id="treemap">
+            <svg class="treemap"></svg>
+            <svg class="temp"></svg>
+        </div>
+    </div>
+
+    <script src="script/const.js"></script>
+    <script src="script/choropleth.js"></script>
+    <script src="script/pyramid.js"></script>
+    <script src="script/treemap.js"></script>
+    <script src="script/main.js"></script>
 </body>
 </html>
