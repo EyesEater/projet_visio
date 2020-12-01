@@ -35,6 +35,7 @@ function pyramidBuilder(data, index, target, options) {
     if (typeof options.style === 'undefined') {
         var style = {
             leftBarColor: '#6c9dc6',
+            linkedLeftBarColor: '#2372be',
             rightBarColor: '#de5454',
             tooltipBG: '#fefefe',
             tooltipColor: 'black'
@@ -42,26 +43,22 @@ function pyramidBuilder(data, index, target, options) {
     } else {
         var style = {
             leftBarColor: typeof options.style.leftBarColor === 'undefined'  ? '#6c9dc6' : options.style.leftBarColor,
+            linkedLeftBarColor: typeof options.style.linkedLeftBarColor === 'undefined'  ? '#6c9dc6' : options.style.linkedLeftBarColor,
             rightBarColor: typeof options.style.rightBarColor === 'undefined' ? '#de5454' : options.style.rightBarColor,
             tooltipBG: typeof options.style.tooltipBG === 'undefined' ? '#fefefe' : options.style.tooltipBG,
             tooltipColor: typeof options.style.tooltipColor === 'undefined' ? 'black' : options.style.tooltipColor
         };
     }
 
-    var totalPopulation = d3.sum(index, function(d) {
-            return d.created.length + d.ended.length;
-        }),
-        percentage = function(d) {
-            return d / totalPopulation;
-        };
-
-    var styleSection = d3.select(target).append('style')
+    d3.select(target).append('style')
         .text('svg {max-width:100%} \
     .axis line,axis path {shape-rendering: crispEdges;fill: transparent;stroke: #555;} \
     .axis text {font-size: 11px;} \
     .bar {fill-opacity: 0.5;} \
     .bar.left {fill: ' + style.leftBarColor + ';} \
     .bar.left:hover {fill: ' + colorTransform(style.leftBarColor, '333333') + ';} \
+    .bar.left.linked {fill: ' + style.linkedLeftBarColor + ';} \
+    .bar.left.linked:hover {fill: ' + colorTransform(style.linkedLeftBarColor, '333333') + ';} \
     .bar.right {fill: ' + style.rightBarColor + ';} \
     .bar.right:hover {fill: ' + colorTransform(style.rightBarColor, '333333') + ';} \
     .tooltip {position: absolute;line-height: 1.1em;padding: 7px; margin: 3px;background: ' + style.tooltipBG + '; color: ' + style.tooltipColor + '; pointer-events: none;border-radius: 6px;}')
@@ -74,7 +71,6 @@ function pyramidBuilder(data, index, target, options) {
     var legend = region.append('g')
         .attr('class', 'legend');
 
-    // TODO: fix these margin calculations -- consider margin.middle == 0 -- what calculations for padding would be necessary?
     legend.append('rect')
         .attr('class', 'bar left')
         .attr('x', (w / 2) - (margin.middle * 3))
@@ -112,9 +108,7 @@ function pyramidBuilder(data, index, target, options) {
         .attr('class', 'inner-region')
         .attr('transform', translation(margin.left, margin.top));
 
-    // find the maximum data value for whole dataset
-    // and rounds up to nearest 5%
-    //  since this will be shared by both of the x-axes
+
     var maxValue = Math.ceil(Math.max(
         d3.max(index, function(d) {
             return (d.created.length);
@@ -125,9 +119,6 @@ function pyramidBuilder(data, index, target, options) {
     ));
 
     // SET UP SCALES
-
-    // the xScale goes from 0 to the width of a region
-    //  it will be reversed for the left x-axis
     var xScale = d3.scaleLinear()
         .domain([0, maxValue])
         .range([0, (sectorWidth-margin.middle)])
@@ -164,7 +155,6 @@ function pyramidBuilder(data, index, target, options) {
         .scale(xScale);
 
     var xAxisLeft = d3.axisBottom()
-        // REVERSE THE X-AXIS SCALE ON THE LEFT SIDE BY REVERSING THE RANGE
         .scale(xScale.copy().range([leftBegin, 0]));
 
     // MAKE GROUPS FOR EACH SIDE OF CHART
@@ -174,6 +164,7 @@ function pyramidBuilder(data, index, target, options) {
     var rightBarGroup = pyramid.append('g')
         .attr('transform', translation(rightBegin, 0));
 
+    //CREATE BARS
     index.forEach(year => {
         leftBarGroup.append('g')
             .attr('x',0)
@@ -186,7 +177,12 @@ function pyramidBuilder(data, index, target, options) {
             let artist = findArtist(data,c);
             leftBarGroup.select('#barLeft'+year.year)
                 .append('rect')
-                .attr('class', 'bar left')
+                .attr('class', function(d){
+                    if(artist.lifeSpan.end !== "")
+                        return 'bar left linked';
+                    else
+                        return 'bar left';
+                })
                 .attr('id','c'+c)
                 .attr('x', xScale(left))
                 .attr('y', function(d) {
@@ -285,86 +281,9 @@ function pyramidBuilder(data, index, target, options) {
         .attr('transform', translation(rightBegin, h))
         .call(xAxisRight);
 
-    // DRAW BARS
-    /*leftBarGroup.selectAll('.bar.left')
-        .data(index)
-        .enter().append('g')
-        .attr('class', 'bar left')
-        .attr('x', 0)
-        .attr('y', function(d) {
-            return yScale(d.year) + margin.middle / 4;
-        })
-        .attr('width', function(d) {
-            return xScale(d.created.length);
-        })
-        .attr('height', 9)
-        /*.on("mouseover", function(d) {
-            tooltipDiv.transition()
-                .duration(200)
-                .style("opacity", 0.9);
-            tooltipDiv.html("<strong> CREATED </strong>");
-        })
-        .on("mouseout", function(d) {
-            tooltipDiv.transition()
-                .duration(500)
-                .style("opacity", 0);
-        })
-        .selectAll('rect')
-            .data(function (d){
-                left = -10;
-                yearProcessing=d.year;
-                console.log(d);
-                return d.created;
-            })
-            .enter().append('rect')
-            .attr('class', 'bar left')
-            .attr('x', function (d){
-                left = left+10;
-                return left;
-            })
-            .attr('y', function(d) {
-                return yScale(yearProcessing) + margin.middle / 4;
-            })
-            .attr('height', 9)
-            .attr('width',10)
-            .append('text').text(function(d){
-                return yearProcessing + " : " + d;
-            });*/
-
-    /*rightBarGroup.selectAll('.bar.right')
-        .data(index)
-        .enter().append('rect')
-        .attr('class', 'bar right')
-        .attr('x', 0)
-        .attr('y', function(d) {
-            return yScale(d.year) + margin.middle / 4;
-        })
-        .attr('width', function(d) {
-            return xScale(d.ended.length);
-        })
-        .attr('height', 9)//((yScale.range()[0] / d.ended.length) - margin.middle / 2))
-        .on("mouseover", function(d) {
-            tooltipDiv.transition()
-                .duration(200)
-                .style("opacity", 0.9);
-            tooltipDiv.html("<strong> ENDED </strong>");
-        })
-        .on("mouseout", function(d) {
-            tooltipDiv.transition()
-                .duration(500)
-                .style("opacity", 0);
-        });*/
-
-    /* HELPER FUNCTIONS */
-
     // string concat for translate
     function translation(x, y) {
         return 'translate(' + x + ',' + y + ')';
-    }
-
-    // numbers with commas
-    function prettyFormat(x) {
-        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
 
     // lighten colors
@@ -405,6 +324,7 @@ function getYearObject(index,year){
     return null;
 }
 
+//LAUNCHES THE PYRAMID PROCESS
 async function pyramid(groups) {
     let index = [];
     let yearMin = 2020;
@@ -442,11 +362,7 @@ async function pyramid(groups) {
         minYear: yearMin,
         maxYear: yearMax,
         height: 1000,
-        width: 2400,
-        style: {
-            leftBarColor: "#229922",
-            rightBarColor: "#992222"
-        }
+        width: 2400
     }
     pyramidBuilder(groups, index, '#pyramid',options);
     return "Fin pyramid";
