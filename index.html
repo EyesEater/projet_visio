@@ -18,7 +18,7 @@
     />
 </head>
 <body>
-    <div class="row">
+    <div class="row align-items-center">
         <div class="col-4">
             <button onclick="clickChoropleth();">Choropleth</button>
         </div>
@@ -49,8 +49,12 @@
             </div>
         </div>
     </div>
-
-    <div id="pyramid" style="display: none"></div>
+    <div id="divPyramid" style="display: none">
+        <div class="row">
+            <div id="pyramid" class="col-10"></div>
+            <div class="col-2" id="legendPyramid" style="margin-top: 10%;"></div>
+        </div>
+    </div>
 
     <div id="divTreemap" style="display: none">
         <div id="treemap">

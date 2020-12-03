@@ -185,19 +185,19 @@ function getArtistsByCountry(genresFiltered, artistes, year){
 }
 
 function clickTreemap(){
-    $("#pyramid").hide();
+    $("#divPyramid").hide();
     $("#divChoropleth").hide();
     $("#divTreemap").show();
 }
 
 function clickChoropleth(){
-    $("#pyramid").hide();
+    $("#divPyramid").hide();
     $("#divTreemap").hide();
     $("#divChoropleth").show();
 }
 
 function clickPyramid(){
-    $("#pyramid").show();
+    $("#divPyramid").show();
     $("#divTreemap").hide();
     $("#divChoropleth").hide();
 }
@@ -224,7 +224,7 @@ d3.json("public/wasabi-artist.json").then(async rawData => {
 
     choropleth(genres, artistes, countries);
 
-    pyramid(groups);
+    pyramid(groups,genres);
 
     treemap(artistes, genres);
 

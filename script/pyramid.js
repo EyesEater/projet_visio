@@ -8,7 +8,7 @@ function findArtist(data,id){
     return artist;
 }
 
-function pyramidBuilder(data, index, target, options) {
+function pyramidBuilder(data, index, target,genresFiltered, options) {
     var w = typeof options.width === 'undefined' ? 400  : options.width,
         h = typeof options.height === 'undefined' ? 400  : options.height,
         w_full = w,
@@ -35,7 +35,6 @@ function pyramidBuilder(data, index, target, options) {
     if (typeof options.style === 'undefined') {
         var style = {
             leftBarColor: '#6c9dc6',
-            linkedLeftBarColor: '#2372be',
             rightBarColor: '#de5454',
             tooltipBG: '#fefefe',
             tooltipColor: 'black'
@@ -43,7 +42,6 @@ function pyramidBuilder(data, index, target, options) {
     } else {
         var style = {
             leftBarColor: typeof options.style.leftBarColor === 'undefined'  ? '#6c9dc6' : options.style.leftBarColor,
-            linkedLeftBarColor: typeof options.style.linkedLeftBarColor === 'undefined'  ? '#6c9dc6' : options.style.linkedLeftBarColor,
             rightBarColor: typeof options.style.rightBarColor === 'undefined' ? '#de5454' : options.style.rightBarColor,
             tooltipBG: typeof options.style.tooltipBG === 'undefined' ? '#fefefe' : options.style.tooltipBG,
             tooltipColor: typeof options.style.tooltipColor === 'undefined' ? 'black' : options.style.tooltipColor
@@ -56,11 +54,7 @@ function pyramidBuilder(data, index, target, options) {
     .axis text {font-size: 11px;} \
     .bar {fill-opacity: 0.5;} \
     .bar.left {fill: ' + style.leftBarColor + ';} \
-    .bar.left:hover {fill: ' + colorTransform(style.leftBarColor, '333333') + ';} \
-    .bar.left.linked {fill: ' + style.linkedLeftBarColor + ';} \
-    .bar.left.linked:hover {fill: ' + colorTransform(style.linkedLeftBarColor, '333333') + ';} \
     .bar.right {fill: ' + style.rightBarColor + ';} \
-    .bar.right:hover {fill: ' + colorTransform(style.rightBarColor, '333333') + ';} \
     .tooltip {position: absolute;line-height: 1.1em;padding: 7px; margin: 3px;background: ' + style.tooltipBG + '; color: ' + style.tooltipColor + '; pointer-events: none;border-radius: 6px;}')
 
     var region = d3.select(target).append('svg')
@@ -71,33 +65,46 @@ function pyramidBuilder(data, index, target, options) {
     var legend = region.append('g')
         .attr('class', 'legend');
 
-    legend.append('rect')
-        .attr('class', 'bar left')
-        .attr('x', (w / 2) - (margin.middle * 3))
-        .attr('y', 12)
-        .attr('width', 12)
-        .attr('height', 12);
+    legend.append('text')
+        .attr('fill', '#000')
+        .attr('x', (w / 2) - (margin.middle * 4))
+        .attr('y', 18)
+        .attr('dy', '0.32em')
+        .text('⭠ Created');
 
     legend.append('text')
         .attr('fill', '#000')
-        .attr('x', (w / 2) - (margin.middle * 2))
-        .attr('y', 18)
-        .attr('dy', '0.32em')
-        .text('Created');
-
-    legend.append('rect')
-        .attr('class', 'bar right')
         .attr('x', (w / 2) + (margin.middle * 2))
-        .attr('y', 12)
-        .attr('width', 12)
-        .attr('height', 12);
-
-    legend.append('text')
-        .attr('fill', '#000')
-        .attr('x', (w / 2) + (margin.middle * 3))
         .attr('y', 18)
         .attr('dy', '0.32em')
-        .text('Ended');
+        .text('Ended ⭢');
+
+    // LEGEND
+    d3.select("#legendPyramid")
+        .append("svg").attr("id", "legendSVGP")
+        .attr('width', 100)
+        .attr('height', 500);
+
+    var legend = d3.select("#legendSVGP")
+        .append('g')
+        .attr('class', 'legend');
+
+    let cpt = 1;
+    for (c in genreColor) {
+        var ligne = legend.append("g").attr('transform', 'translate(0,'+cpt*30+')')
+        ligne.append('rect')
+            .attr('class', c)
+            .attr('fill', genreColor[c])
+            .attr('width', 12)
+            .attr('height', 12);
+
+        ligne.append('text')
+            .attr('fill', "#000")
+            .attr('dy', '0.32em')
+            .attr("transform", 'translate(20,0)')
+            .text(c);
+        cpt++;
+    }
 
     var popup = d3.select("body").append("div")
         .attr("class", "tooltip")
@@ -158,7 +165,6 @@ function pyramidBuilder(data, index, target, options) {
         .scale(xScale.copy().range([leftBegin, 0]));
 
     // MAKE GROUPS FOR EACH SIDE OF CHART
-    // scale(-1,1) is used to reverse the left side so the bars grow left instead of right
     var leftBarGroup = pyramid.append('g')
         .attr('transform', translation(leftBegin, 0) + 'scale(-1,1)');
     var rightBarGroup = pyramid.append('g')
@@ -174,16 +180,10 @@ function pyramidBuilder(data, index, target, options) {
 
         let left = 0;
         year.created.forEach(c => {
-            let artist = findArtist(data,c);
+            let artist = findArtist(data,c.id);
             leftBarGroup.select('#barLeft'+year.year)
                 .append('rect')
-                .attr('class', function(d){
-                    if(artist.lifeSpan.end !== "")
-                        return 'bar left linked';
-                    else
-                        return 'bar left';
-                })
-                .attr('id','c'+c)
+                .attr('id','c'+c.id)
                 .attr('x', xScale(left))
                 .attr('y', function(d) {
                     return yScale(year.year) + margin.middle / 4;
@@ -192,9 +192,15 @@ function pyramidBuilder(data, index, target, options) {
                     return xScale(1);
                 })
                 .attr('height', yScale.range()[0]/yearScale.length)
+                .attr('fill', function(d){
+                    if(artist.lifeSpan.end === "")
+                        return colorTransform(genreColor[c.genre],'111111');
+                    else
+                        return genreColor[c.genre];
+                })
                 .on("mouseover", function(d, i) {
                     d3.select(this).style("stroke", "black");
-                    d3.select("#e"+c).style("stroke", "black");
+                    d3.select("#e"+c.id).style("stroke", "black");
 
                     popup.transition()
                         .duration(200)
@@ -206,7 +212,7 @@ function pyramidBuilder(data, index, target, options) {
                 })
                 .on("mouseout", function() {
                     d3.select(this).style("stroke", "none");
-                    d3.select("#e"+c).style("stroke", "none");
+                    d3.select("#e"+c.id).style("stroke", "none");
                     popup.transition()
                         .duration(500)
                         .style("opacity", 0);
@@ -222,11 +228,10 @@ function pyramidBuilder(data, index, target, options) {
 
         let right = 0;
         year.ended.forEach(c => {
-            let artist = findArtist(data,c);
+            let artist = findArtist(data,c.id);
             rightBarGroup.select('#barRight'+year.year)
                 .append('rect')
-                .attr('class', 'bar right')
-                .attr('id','e'+c)
+                .attr('id','e'+c.id)
                 .attr('x', xScale(right))
                 .attr('y', function(d) {
                     return yScale(year.year) + margin.middle / 4;
@@ -235,9 +240,12 @@ function pyramidBuilder(data, index, target, options) {
                     return xScale(1);
                 })
                 .attr('height', yScale.range()[0]/yearScale.length)
+                .attr('fill', function(d){
+                    return genreColor[c.genre];
+                })
                 .on("mouseover", function(d, i) {
                     d3.select(this).style("stroke", "black");
-                    d3.select("#c"+c).style("stroke", "black");
+                    d3.select("#c"+c.id).style("stroke", "black");
 
                     popup.transition()
                         .duration(200)
@@ -249,7 +257,7 @@ function pyramidBuilder(data, index, target, options) {
                 })
                 .on("mouseout", function() {
                     d3.select(this).style("stroke", "none");
-                    d3.select("#c"+c).style("stroke", "none");
+                    d3.select("#c"+c.id).style("stroke", "none");
                     popup.transition()
                         .duration(500)
                         .style("opacity", 0);
@@ -325,7 +333,7 @@ function getYearObject(index,year){
 }
 
 //LAUNCHES THE PYRAMID PROCESS
-async function pyramid(groups) {
+async function pyramid(groups,genresFiltered) {
     let index = [];
     let yearMin = 2020;
     let yearMax = 0;
@@ -337,7 +345,7 @@ async function pyramid(groups) {
         if(yearBegin !== "") {
             if (!getYearObject(index,yearBegin))
                 index.push({year: yearBegin, created: [], ended: []});
-            getYearObject(index,yearBegin)["created"].push(g.id);
+            getYearObject(index,yearBegin)["created"].push({"id":g.id,"genre":getMainGenre(genresFiltered,g.genres[0])[0]});
 
             if(yearBegin < yearMin)
                 yearMin = yearBegin;
@@ -348,7 +356,7 @@ async function pyramid(groups) {
         if(yearEnd !== ""){
             if (!getYearObject(index,yearEnd))
                 index.push({year: yearEnd, created: [], ended: []});
-            getYearObject(index,yearEnd)["ended"].push(g.id);
+            getYearObject(index,yearEnd)["ended"].push({"id":g.id,"genre":getMainGenre(genresFiltered,g.genres[0])[0]});
 
             if(yearEnd < yearMin)
                 yearMin = yearEnd;
@@ -357,6 +365,10 @@ async function pyramid(groups) {
         }
     });
     index = index.sort((a,b) => a.year - b.year);
+    index.forEach(y =>{
+        y.created = y.created.sort((a,b) => a.genre.localeCompare(b.genre));
+        y.ended = y.ended.sort((a,b) => a.genre.localeCompare(b.genre));
+    });
 
     var options = {
         minYear: yearMin,
@@ -364,6 +376,6 @@ async function pyramid(groups) {
         height: 1000,
         width: 2400
     }
-    pyramidBuilder(groups, index, '#pyramid',options);
+    pyramidBuilder(groups, index, '#pyramid',genresFiltered,options);
     return "Fin pyramid";
 }
