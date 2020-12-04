@@ -52,7 +52,7 @@ function pyramidBuilder(data, index, target,genresFiltered, options) {
         .text('svg {max-width:100%} \
     .axis line,axis path {shape-rendering: crispEdges;fill: transparent;stroke: #555;} \
     .axis text {font-size: 11px;} \
-    .bar {fill-opacity: 0.5;} \
+    .bar {fill-opacity: 1;} \
     .bar.left {fill: ' + style.leftBarColor + ';} \
     .bar.right {fill: ' + style.rightBarColor + ';} \
     .tooltip {position: absolute;line-height: 1.1em;padding: 7px; margin: 3px;background: ' + style.tooltipBG + '; color: ' + style.tooltipColor + '; pointer-events: none;border-radius: 6px;}')
@@ -194,7 +194,7 @@ function pyramidBuilder(data, index, target,genresFiltered, options) {
                 .attr('height', yScale.range()[0]/yearScale.length)
                 .attr('fill', function(d){
                     if(artist.lifeSpan.end === "")
-                        return colorTransform(genreColor[c.genre],'111111');
+                        return colorTransform(genreColor[c.genre],'222222');
                     else
                         return genreColor[c.genre];
                 })
