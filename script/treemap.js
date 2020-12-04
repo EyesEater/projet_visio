@@ -47,8 +47,6 @@ async function treemap(artistes, genres) {
     const width = window.innerWidth;
     const height = window.innerHeight * 0.8;
 
-    const animationSpeed = 500;
-    let color = d3.scaleSequential([8, 0], d3.interpolateCool);
     const treemap = data => d3.treemap()
         .size([width, height])
         .paddingOuter(5)
@@ -112,9 +110,7 @@ async function treemap(artistes, genres) {
 
         // Create title
         node.append('title')
-            .text(d => {
-                return d.name;
-            });
+            .text(d => d.name);
 
         // Create rectangle
         node.append('rect')
@@ -193,7 +189,6 @@ async function treemap(artistes, genres) {
     };
 
     await (async () => {
-
         render(data);
 
         d3.select('#zoomOut').on('click', () => render(data));
