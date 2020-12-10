@@ -1,7 +1,7 @@
 function buildPieChart(data,countryName) {
-    var width = 400,
-    height = 400,
-    margin = 40
+    var width = 300,
+    height = 300,
+    margin = 40;
 
 // The radius of the pieplot is half the width or half the height (smallest one). I subtract a bit of margin.
     var radius = Math.min(width, height) / 2 - margin
@@ -27,7 +27,7 @@ function buildPieChart(data,countryName) {
         data_ready = pie(Object.entries(data))
     else
         data_ready = pie([['undefined',1]])
-    console.log(data_ready)
+
 // Build the pie chart: Basically, each part of the pie is a path that we build using the arc function.
     svg.selectAll('piechart')
         .data(data_ready)
