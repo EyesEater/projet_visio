@@ -9,25 +9,33 @@ function getDataFormated(artistes, genres) {
         let children = [];
         if (genres.hasOwnProperty(elem)) {
             let colorFamily = d3.scaleLinear().domain([1,7]).range([genreColor[elem], "#FFF"])
+
             for (let value in genres[elem]) {
+                let i = 0;
                 if (genres[elem].hasOwnProperty(value)) {
                     let tmpArtiste = [];
                     for (let id in artistes) {
                         if (artistes.hasOwnProperty(id)) {
-                            if (artistes[id].genres.includes(genres[elem][value])) {
-                                let artiste = JSON.parse(JSON.stringify(artistes[id]));
-                                artiste.value = artistes[id].deezerFans;
-                                artiste.color = colorFamily(5);
-                                tmpArtiste.push(artiste);
+                            if (artistes[id].genres.includes(genres[elem][value]) && artistes[id].deezerFans > 10000) {
+                                i++;
+                                //if (i < 99) {
+                                    let artiste = JSON.parse(JSON.stringify(artistes[id]));
+                                    artiste.value = artistes[id].deezerFans;
+                                    artiste.color = colorFamily(5);
+                                    tmpArtiste.push(artiste);
+                                /*} else {
+                                    break;
+                                }*/
                             }
                         }
                     }
 
-                    children.push({
-                        "name": genres[elem][value],
-                        "color": colorFamily(3),
-                        "children": tmpArtiste
-                    });
+                    if (tmpArtiste.length > 10)
+                        children.push({
+                            "name": genres[elem][value],
+                            "color": colorFamily(3),
+                            "children": tmpArtiste
+                        });
                 }
             }
 
@@ -36,6 +44,8 @@ function getDataFormated(artistes, genres) {
                 "color": colorFamily(1),
                 "children": children
             });
+
+
         }
     }
     return data;
