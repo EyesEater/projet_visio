@@ -11,21 +11,16 @@ function getDataFormated(artistes, genres) {
             let colorFamily = d3.scaleLinear().domain([1,7]).range([genreColor[elem], "#FFF"])
 
             for (let value in genres[elem]) {
-                let i = 0;
                 if (genres[elem].hasOwnProperty(value)) {
                     let tmpArtiste = [];
+                    
                     for (let id in artistes) {
                         if (artistes.hasOwnProperty(id)) {
                             if (artistes[id].genres.includes(genres[elem][value]) && artistes[id].deezerFans > 10000) {
-                                i++;
-                                //if (i < 99) {
-                                    let artiste = JSON.parse(JSON.stringify(artistes[id]));
-                                    artiste.value = artistes[id].deezerFans;
-                                    artiste.color = colorFamily(5);
-                                    tmpArtiste.push(artiste);
-                                /*} else {
-                                    break;
-                                }*/
+                                let artiste = JSON.parse(JSON.stringify(artistes[id]));
+                                artiste.value = artistes[id].deezerFans;
+                                artiste.color = colorFamily(5);
+                                tmpArtiste.push(artiste);
                             }
                         }
                     }
