@@ -166,7 +166,7 @@ async function treemap(artistes, genres) {
                 popup.html("<b>" + i.data.name + "</b><br/>" +
                     (i.data.gender ? ( (i.data.gender === "Female") ? "Femme" : "Homme" ) : "Groupe") + "<br/>" +
                     i.data.genres + "<br/>" +
-                    ((i.data.type === "Group") ? "Date de création du groupe " + i.data.lifeSpan.begin : "Date de naissance ") + i.data.lifeSpan.begin + "<br/>" +
+                    ((i.data.type === "Group") ? ("Date de création du groupe " + i.data.lifeSpan.begin) : ("Date de naissance " + i.data.lifeSpan.begin)) + "<br/>" +
                     ((i.data.type === "Group") ? ( (i.data.lifeSpan.end) ? "Date de fin du groupe " + i.data.lifeSpan.end : "Le groupe existe toujours"): ((i.data.lifeSpan.end) ? "Dates de décès " + i.data.lifeSpan.end : "L'artiste n'est pas décédé")) + "<br/>" +
                     i.data.location.city + ", " + i.data.location.country + "<br/>" +
                     "Nombre de fans deezer " + i.data.deezerFans + "<br/>")
